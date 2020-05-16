@@ -1,0 +1,17 @@
+exp_name: COCOwhite
+coco_categories:
+        - car
+        - airplane
+        - boat
+        - dog
+        - bird
+        - zebra
+        - orange
+        - banana
+        - clock
+        - laptop
+coco_imgpercat: 20
+bg_path: bgs/white.png
+bg_size: (224,224)
+patch_size: (125,125)
+out_dir: datasets/COCO_large_white/
