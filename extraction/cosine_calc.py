@@ -55,7 +55,7 @@ if __name__ == "__main__":
 
         # find csvs in this directory
         filenames = os.listdir(currdir)
-        csvs = [fn for fn in filenames if fn.endswith("csv")]
+        csvs = [fn for fn in filenames if fn.endswith("fc.csv")]
 
         for c in csvs:
             filepath = os.path.join(currdir, c)

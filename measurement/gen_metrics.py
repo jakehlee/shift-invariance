@@ -5,7 +5,7 @@ import math
 import time
 import matplotlib.pyplot as plt
 
-MODEL = "ResNet-50"
+MODEL = "MobileNet V2 AA"
 LAYER = "fc"
 BG = "white"
 

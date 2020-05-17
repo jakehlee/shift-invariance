@@ -2,3 +2,4 @@ coco/
 datasets/
 extraction/features
 measurement/*/
+*.pyc
