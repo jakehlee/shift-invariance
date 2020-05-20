@@ -2,4 +2,5 @@ coco/
 datasets/
 extraction/features
 measurement/*/
+svm/logs
 *.pyc
