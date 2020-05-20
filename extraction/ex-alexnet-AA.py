@@ -44,7 +44,7 @@ if __name__ == "__main__":
         if os.path.isdir(os.path.join(img_dir, d)):
             subdirs.append(d)
     
-    model = models_lplf.alexnet.alexnet(filter_size=5)
+    model = models_lpf.alexnet.alexnet(filter_size=5)
     model.load_state_dict(torch.load('/home/jake/Documents/GitHub/antialiased-cnns/weights/alexnet_lpf5.pth.tar')['state_dict'])
     model.cuda()
     model.eval()
@@ -53,6 +53,11 @@ if __name__ == "__main__":
     fc6relu = model._modules.get('classifier')[2]
     fc7 = model._modules.get('classifier')[4]
     fc7relu = model._modules.get('classifier')[5]
+
+    fc6_buf = torch.zeros(BATCH,4096).cuda()
+    fc6relu_buf = torch.zeros(BATCH,4096).cuda()
+    fc7_buf = torch.zeros(BATCH,4096).cuda()
+    fc7relu_buf = torch.zeros(BATCH,4096).cuda()
 
     def fc6_hook(m, i, o):
         if o.data.shape[0] != BATCH:
@@ -97,11 +102,10 @@ if __name__ == "__main__":
         dataset_loader = data.DataLoader(dataset, batch_size=BATCH)
 
         fc6_out = []
-	    fc6relu_out = []
-	    fc7_out = []
-	    fc7relu_out = []
+        fc6relu_out = []
+        fc7_out = []
+        fc7relu_out = []
         fc_out = []
-        class_out = []
         for i, (img_batch, _) in enumerate(dataset_loader,0):
             print("Extracting batch {}".format(i))
             img_batch = img_batch.cuda()
@@ -109,18 +113,18 @@ if __name__ == "__main__":
 
             fc_buf = model(img_batch)
             class_buf = F.softmax(fc_buf, dim=1).tolist()
-            fc_buf = fc_buf.tolist()
             fc6_list = fc6_buf.tolist()
-	        fc6relu_list = fc6relu_buf.tolist()
-	        fc7_list = fc7_buf.tolist()
-	        fc7relu_list = fc7relu_buf.tolist()
+            fc6relu_list = fc6relu_buf.tolist()
+            fc7_list = fc7_buf.tolist()
+            fc7relu_list = fc7relu_buf.tolist()
+            fc_buf = fc_buf.tolist()
 
             for j in range(len(fc_buf)):
                 img_name = os.path.split(dataset.imgs[ptr+j][0])[-1]
                 fc6_out.append([img_name] + fc6_list[j])
-	            fc6relu_out.append([img_name] + fc6relu_list[j])
-	            fc7_out.append([img_name] + fc7_list[j])
-	            fc7relu_out.append([img_name] + fc7relu_list[j])
+                fc6relu_out.append([img_name] + fc6relu_list[j])
+                fc7_out.append([img_name] + fc7_list[j])
+                fc7relu_out.append([img_name] + fc7relu_list[j])
                 fc_out.append([img_name] + fc_buf[j])
 
         with open(os.path.join(out_subdir, "fc6.csv"), 'w') as f:

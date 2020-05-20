@@ -49,7 +49,8 @@ if __name__ == "__main__":
     for d in subdirs:
         img_subdir = os.path.join(img_dir, d)
         out_subdir = os.path.join(out_dir, d)
-        os.mkdir(out_subdir)
+        if not os.path.isdir(out_subdir):
+            os.mkdir(out_subdir)
 
         dataset = datasets.ImageFolder(root=img_subdir, transform=img_transform)
         dataset_loader = data.DataLoader(dataset, batch_size=BATCH)

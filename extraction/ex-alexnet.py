@@ -51,6 +51,11 @@ if __name__ == "__main__":
     fc7 = model._modules.get('classifier')[4]
     fc7relu = model._modules.get('classifier')[5]
 
+    fc6_buf = torch.zeros(BATCH,4096).cuda()
+    fc6relu_buf = torch.zeros(BATCH,4096).cuda()
+    fc7_buf = torch.zeros(BATCH,4096).cuda()
+    fc7relu_buf = torch.zeros(BATCH,4096).cuda()
+
     def fc6_hook(m, i, o):
         if o.data.shape[0] != BATCH:
             temp = torch.zeros(BATCH - o.data.shape[0], 4096).cuda()
@@ -98,7 +103,6 @@ if __name__ == "__main__":
         fc7_out = []
         fc7relu_out = []
         fc_out = []
-        class_out = []
         for i, (img_batch, _) in enumerate(dataset_loader,0):
             print("Extracting batch {}".format(i))
             img_batch = img_batch.cuda()
@@ -106,11 +110,11 @@ if __name__ == "__main__":
 
             fc_buf = model(img_batch)
             class_buf = F.softmax(fc_buf, dim=1).tolist()
-            fc_buf = fc_buf.tolist()
             fc6_list = fc6_buf.tolist()
             fc6relu_list = fc6relu_buf.tolist()
             fc7_list = fc7_buf.tolist()
             fc7relu_list = fc7relu_buf.tolist()
+            fc_buf = fc_buf.tolist()
 
             for j in range(len(fc_buf)):
                 img_name = os.path.split(dataset.imgs[ptr+j][0])[-1]
