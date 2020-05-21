@@ -76,12 +76,12 @@ if __name__ == "__main__":
             print("{} TB SVD...".format(sd))
 
             clf = svm.SVC(kernel='linear', C=1)
-            tb_scores = cross_val_score(clf, feats, topbot_labels)
+            tb_scores = cross_val_score(clf, feats, topbot_labels, cv=5)
 
             print("{} LR SVD...".format(sd))
 
             clf = svm.SVC(kernel='linear', C=1)
-            lr_scores = cross_val_score(clf, feats, leftright_labels)
+            lr_scores = cross_val_score(clf, feats, leftright_labels, cv=5)
 
             tb_stats.append([sd, tb_scores.mean(), tb_scores.std()])
             lr_stats.append([sd, lr_scores.mean(), lr_scores.std()])
